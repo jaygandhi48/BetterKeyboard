@@ -8,14 +8,15 @@ class keyboard():
         self.toprow = ['Q','W','E','R','T','Y','U', 'I','O','P']
         self.middlerow = ['A','S','D','F','G','H','J','K','L']
         self.bottomrow = ['Z','X','C','V','B','N','M']
+        self.fingerlist = [counter for counter in self.middlerow if counter !='H' and counter !='G'] # The typical fingers which fingers start at
 
     
-    def getboard(self):
-        return self.board
+    def fingerOn(self):
+        return self.fingerlist
 
 def main():
     keyboardinstant = keyboard()
-    print(keyboardinstant.getboard())
+    print(keyboardinstant.fingerOn())
     
 if __name__ == "__main__":
     main()
