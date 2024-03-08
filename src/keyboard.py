@@ -2,6 +2,12 @@ import math
 '''
 This file initializes the layout of the current keyboard and calculates
 the distance function from different rows/keys.
+
+Some bold assumptions in keyboard: 
+1) Your finger starts at A,S,D,F,J,K,L.
+2) Only move one finger at a time, keeping the other where they are.
+3) There are some unnatural way of fingers combinations of finger movement which do not feel 
+comfortable or natural whilst typing however with practice still acheivable. 
 '''
 KEYBOARD_LAYOUT = {
             'Q': (0, 0), 'W': (0, 1), 'E': (0, 2), 'R': (0, 3), 'T': (0, 4),
@@ -49,27 +55,13 @@ class keyboard():
             distance.clear()
             points.clear()
             self.fingerplacement[self.fingerplacement.index(self.getKey(from_finger))] = self.getKey(to_finger)
-            print(self.fingerplacement, total)
             
-        
-           
-
-                       
+        return total
+                                
 def main():
     keyboardinstant = keyboard()
-    print(keyboardinstant.distance('YQOP'))
+    print(keyboardinstant.distance('ZEMQ'))
     
 if __name__ == "__main__":
     main()
 
-
-'''
-index_min_dist = distance_list.index(min(distance_list))
-            print(index_min_dist)
-            where_from = fromto_list[index_min_dist][0]
-           
-            to = fromto_list[index_min_dist][1]
-            print(fromto_list)
-           
-            self.fingerplacement[self.fingerplacement.index(where_from)] = to
-'''
