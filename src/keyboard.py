@@ -22,39 +22,54 @@ class keyboard():
         x1,y1 = Point1
         x2, y2 = Point2
         return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
- 
+    
+
+    def getKey(self,target):
+        keys = [key for key, value in self.design.items() if value == target]
+        return keys[0]
 
     def distance(self, word):
-        total_distance = 0
-        distance_list = []
-        fromto_list = []
-        for letter in word:
-            Point1 = self.design[letter]
-            for fingeron in self.fingerplacement:
-                Point2 = self.design[fingeron]
-                temp_calculation = self.euclideanDistance(Point1,Point2)
-                distance_list.append(temp_calculation)
-                fromto_list.append((fingeron,letter))
-
-        index_min_dist = distance_list.index(min(distance_list))
-        where_from = fromto_list[index_min_dist][0]
-        to = fromto_list[index_min_dist][1]
+        total=0
+        distance = []
+        points = []
+        for letters in word:
+            point1 = self.design[letters]
+            for fingers in self.fingerplacement:
+                point2 = self.design[fingers]
+                #Calculate distance
+                distance_between_points = self.euclideanDistance(point1,point2)
+                distance.append(distance_between_points)
+                points.append((point2,point1))
+            #Get the index of the minimum
+            #print(distance, points)
+            total += min(distance)
+            index_minimum = distance.index(min(distance))
+            from_finger = points[index_minimum][0]
+            to_finger = points[index_minimum][1]
+            distance.clear()
+            points.clear()
+            self.fingerplacement[self.fingerplacement.index(self.getKey(from_finger))] = self.getKey(to_finger)
+            print(self.fingerplacement, total)
+            
         
-        self.fingerplacement[self.fingerplacement.index(where_from)] = to
-        #where_from = self.design[fromto_list[index_min_dist][0]]
-        #to = fromto_list[index_min_dist][1]
-        #Change the fingerplacment list accordingly 
-
-        #print(where_from, to)
-        return self.fingerplacement
-        #return min(distance_list)
+           
 
                        
 def main():
     keyboardinstant = keyboard()
-    print(keyboardinstant.distance('H'))
+    print(keyboardinstant.distance('YQOP'))
     
 if __name__ == "__main__":
     main()
 
 
+'''
+index_min_dist = distance_list.index(min(distance_list))
+            print(index_min_dist)
+            where_from = fromto_list[index_min_dist][0]
+           
+            to = fromto_list[index_min_dist][1]
+            print(fromto_list)
+           
+            self.fingerplacement[self.fingerplacement.index(where_from)] = to
+'''
