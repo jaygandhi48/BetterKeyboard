@@ -1,70 +1,60 @@
+import math
 '''
 This file initializes the layout of the current keyboard and calculates
 the distance function from different rows/keys.
 '''
-TOP_ROW = ['Q','W','E','R','T','Y','U', 'I','O','P']
-MIDDLE_ROW = ['A','S','D','F','G','H','J','K','L']
-BOTTOM_ROW = ['Z','X','C','V','B','N','M',',','.','/']
-STARTING_FINGER = ['A','S','D','F','J','K','L',';'] #Where your typical fingers start of whilst typing
+KEYBOARD_LAYOUT = {
+            'Q': (0, 0), 'W': (0, 1), 'E': (0, 2), 'R': (0, 3), 'T': (0, 4),
+            'Y': (0, 5), 'U': (0, 6), 'I': (0, 7), 'O': (0, 8), 'P': (0, 9),
+            'A': (1, 0), 'S': (1, 1), 'D': (1, 2), 'F': (1, 3), 'G': (1, 4),
+            'H': (1, 5), 'J': (1, 6), 'K': (1, 7), 'L': (1, 8), ';': (1, 9),
+            'Z': (2, 0), 'X': (2, 1), 'C': (2, 2), 'V': (2, 3), 'B': (2, 4),
+            'N': (2, 5), 'M': (2, 6), ',': (2, 7), '.': (2, 8), '/': (2, 9)
+        }
+STARTING_FINGER = ['A', 'S', 'D', 'F', 'J', 'K', 'L', ';']
 
 class keyboard():
     def __init__(self) -> None:
-        self.design = [TOP_ROW,MIDDLE_ROW,BOTTOM_ROW] #2d list to represent the keyboard
-        self.fingerplacement = [STARTING_FINGER]
+        self.design = KEYBOARD_LAYOUT
+        self.fingerplacement = STARTING_FINGER
     
-    def createParallelList(self,rowOne: list[str], removal: list[str]) -> list[str]:
-        temp_list = [x for x in rowOne if x not in removal]
-        return temp_list
-        
-    def findIndex(self, target_list: list[str], target: str)->int:
-        for i in range(len(target_list)):
-            if target_list[i] == target:
-                return i
-        
+    def euclideanDistance(self,Point1, Point2):
+        x1,y1 = Point1
+        x2, y2 = Point2
+        return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
+ 
 
-    def distance(self, word: str)->float:
-        '''
-        Calculates the total distance of finger movement which is required to type the word.
-        For example, from middle row key to any key on top row would be distance of 1.032. If
-        the letter is in same row and left or right to the current finger placement, then 
-        it is distace 1. If its from middle row to bottom row, it's 1.118. Distance from bottom 
-        row to top is 2.138. 
-        
-        Special Cases:
-        F->T = 1.247, G->R=1.605, F->B=1.803, B->R=2.661, T->V = 2.015. 
-        H->U = 1.605, J->Y=1.605, H->M=1.803, M->Y=2.661, U->N = 2.015. 
-        For example the word 'NICE' = J->N + K->I + F->C + D->E
-        '''
-        
-        parallel_top = self.createParallelList(TOP_ROW, ['T','Y'])
-        parallel_bottom = self.createParallelList(BOTTOM_ROW, ['B'])
-        
-        
+    def distance(self, word):
+        total_distance = 0
+        distance_list = []
+        fromto_list = []
+        for letter in word:
+            Point1 = self.design[letter]
+            for fingeron in self.fingerplacement:
+                Point2 = self.design[fingeron]
+                temp_calculation = self.euclideanDistance(Point1,Point2)
+                distance_list.append(temp_calculation)
+                fromto_list.append((fingeron,letter))
 
-        length = 0
-        for letter in range(len(word)):
-            if word[letter] in self.fingerplacement:
-                length += 0
-            elif word[letter] in parallel_top:
-                length+=1.032
-                #find index for that letter
-                new_index = self.findIndex(word[letter])
-                #update finger to that letter
-                self.fingerplacement[new_index] = word[letter]
-                #shift one of the finger up, since its parallel it helps
+        index_min_dist = distance_list.index(min(distance_list))
+        where_from = fromto_list[index_min_dist][0]
+        to = fromto_list[index_min_dist][1]
         
-       
+        self.fingerplacement[self.fingerplacement.index(where_from)] = to
+        #where_from = self.design[fromto_list[index_min_dist][0]]
+        #to = fromto_list[index_min_dist][1]
+        #Change the fingerplacment list accordingly 
 
-        
-                
+        #print(where_from, to)
+        return self.fingerplacement
+        #return min(distance_list)
 
-
-           
-                
-        
+                       
 def main():
     keyboardinstant = keyboard()
-    print(keyboardinstant.distance('asdf'))
+    print(keyboardinstant.distance('H'))
     
 if __name__ == "__main__":
     main()
+
+
