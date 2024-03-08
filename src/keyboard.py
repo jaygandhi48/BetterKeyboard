@@ -47,7 +47,6 @@ class keyboard():
                 distance.append(distance_between_points)
                 points.append((point2,point1))
             #Get the index of the minimum
-            #print(distance, points)
             total += min(distance)
             index_minimum = distance.index(min(distance))
             from_finger = points[index_minimum][0]
