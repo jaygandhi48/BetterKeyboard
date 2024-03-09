@@ -2,6 +2,12 @@ import math
 '''
 This file initializes the layout of the current keyboard and calculates
 the distance function from different rows/keys.
+
+Some bold assumptions in keyboard: 
+1) Your finger starts at A,S,D,F,J,K,L.
+2) Only move one finger at a time, keeping the other where they are.
+3) There are some unnatural way of fingers combinations of finger movement which do not feel 
+comfortable or natural whilst typing however with practice still acheivable. 
 '''
 KEYBOARD_LAYOUT = {
             'Q': (0, 0), 'W': (0, 1), 'E': (0, 2), 'R': (0, 3), 'T': (0, 4),
@@ -22,39 +28,42 @@ class keyboard():
         x1,y1 = Point1
         x2, y2 = Point2
         return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
- 
+    
+
+    def getKey(self,target):
+        keys = [key for key, value in self.design.items() if value == target]
+        return keys[0]
 
     def distance(self, word):
-        total_distance = 0
-        distance_list = []
-        fromto_list = []
-        for letter in word:
-            Point1 = self.design[letter]
-            for fingeron in self.fingerplacement:
-                Point2 = self.design[fingeron]
-                temp_calculation = self.euclideanDistance(Point1,Point2)
-                distance_list.append(temp_calculation)
-                fromto_list.append((fingeron,letter))
-
-        index_min_dist = distance_list.index(min(distance_list))
-        where_from = fromto_list[index_min_dist][0]
-        to = fromto_list[index_min_dist][1]
-        
-        self.fingerplacement[self.fingerplacement.index(where_from)] = to
-        #where_from = self.design[fromto_list[index_min_dist][0]]
-        #to = fromto_list[index_min_dist][1]
-        #Change the fingerplacment list accordingly 
-
-        #print(where_from, to)
-        return self.fingerplacement
-        #return min(distance_list)
-
-                       
+        total=0
+        distance = []
+        points = []
+        for letters in word:
+            if letters == ' ':
+                total+=0
+            else:
+                point1 = self.design[letters]
+                for fingers in self.fingerplacement:
+                    point2 = self.design[fingers]
+                    #Calculate distance
+                    distance_between_points = self.euclideanDistance(point1,point2)
+                    distance.append(distance_between_points)
+                    points.append((point2,point1))
+                #Get the index of the minimum
+                total += min(distance)
+                index_minimum = distance.index(min(distance))
+                from_finger = points[index_minimum][0]
+                to_finger = points[index_minimum][1]
+                distance.clear()
+                points.clear()
+                self.fingerplacement[self.fingerplacement.index(self.getKey(from_finger))] = self.getKey(to_finger)
+            
+        return total
+                                
 def main():
     keyboardinstant = keyboard()
-    print(keyboardinstant.distance('H'))
+    print(keyboardinstant.distance('THE QUICK BROWN FOX JUMPES OVER THE LAZY DOG'))
     
 if __name__ == "__main__":
     main()
-
 
