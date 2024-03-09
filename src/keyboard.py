@@ -39,27 +39,30 @@ class keyboard():
         distance = []
         points = []
         for letters in word:
-            point1 = self.design[letters]
-            for fingers in self.fingerplacement:
-                point2 = self.design[fingers]
-                #Calculate distance
-                distance_between_points = self.euclideanDistance(point1,point2)
-                distance.append(distance_between_points)
-                points.append((point2,point1))
-            #Get the index of the minimum
-            total += min(distance)
-            index_minimum = distance.index(min(distance))
-            from_finger = points[index_minimum][0]
-            to_finger = points[index_minimum][1]
-            distance.clear()
-            points.clear()
-            self.fingerplacement[self.fingerplacement.index(self.getKey(from_finger))] = self.getKey(to_finger)
+            if letters == ' ':
+                total+=0
+            else:
+                point1 = self.design[letters]
+                for fingers in self.fingerplacement:
+                    point2 = self.design[fingers]
+                    #Calculate distance
+                    distance_between_points = self.euclideanDistance(point1,point2)
+                    distance.append(distance_between_points)
+                    points.append((point2,point1))
+                #Get the index of the minimum
+                total += min(distance)
+                index_minimum = distance.index(min(distance))
+                from_finger = points[index_minimum][0]
+                to_finger = points[index_minimum][1]
+                distance.clear()
+                points.clear()
+                self.fingerplacement[self.fingerplacement.index(self.getKey(from_finger))] = self.getKey(to_finger)
             
         return total
                                 
 def main():
     keyboardinstant = keyboard()
-    print(keyboardinstant.distance('ZEMQ'))
+    print(keyboardinstant.distance('THE QUICK BROWN FOX JUMPES OVER THE LAZY DOG'))
     
 if __name__ == "__main__":
     main()
